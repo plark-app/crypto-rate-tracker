@@ -1,0 +1,4 @@
+app:
+  host: rate-tracker.plark.io
+  port: 80
+  secure: true

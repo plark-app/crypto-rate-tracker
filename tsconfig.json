@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+        "skipLibCheck": true,
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
+        "moduleResolution": "node",
+        "target": "es5",
+        "module": "esnext",
+        "noEmitHelpers": true,
+        "importHelpers": true,
+        "downlevelIteration": true,
+        "pretty": true,
+        "outDir": "dest",
+        "rootDir": "src",
+        "baseUrl": "src",
+        "lib": [
+            "es5",
+            "es6",
+            "es2015"
+        ],
+        "typeRoots": [
+            "src/definitions",
+            "node_modules/@types"
+        ]
+    },
+    "exclude": [
+        "./node_modules/**/*",
+        "dest/",
+        "src/**/*.spec.tsx",
+        "src/**/*.story.tsx"
+    ]
+}

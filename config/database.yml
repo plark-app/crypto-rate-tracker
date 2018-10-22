@@ -1,0 +1,8 @@
+database:
+
+
+  influx:
+    host: localhost
+    port: 8086
+    protocol: http
+    database: "plark-rate-tracker"

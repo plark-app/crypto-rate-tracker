@@ -1,0 +1,6 @@
+{
+    "name": "influx-database",
+    "private": true,
+    "main": "influx-database.ts",
+    "types": "influx-database.ts"
+}
