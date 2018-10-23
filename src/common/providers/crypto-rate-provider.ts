@@ -3,6 +3,10 @@ import { Measurements, Tags } from 'common/influx-database';
 import AbstractProvider from './abstract-provider';
 
 
+function convertPercent(value: number): number {
+    return Math.round(value * 1000000) / 10000;
+}
+
 export type TickerMap = Record<string, Record<string, number[]>>;
 
 export type CoinQuote = {
@@ -81,7 +85,7 @@ export default class CryptoRateProvider extends AbstractProvider {
             quotes.push({
                 symbol: ticker.symbol,
                 price: ticker.close,
-                change_24h: ((ticker.close - ticker.open) / ticker.close) * 100,
+                change_24h: convertPercent((ticker.close - ticker.open) / ticker.close),
             });
         });
 
