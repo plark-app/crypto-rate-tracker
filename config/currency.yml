@@ -1,0 +1,17 @@
+currency:
+  fiats: [
+    GBP, EUR, HKD, CNY, JPY, CHF, AUD, CAD,
+    KRW, UAH, RUB, CZK, KZT, TRY, PHP, SEK,
+    CUP, GIP, JMD, KPW, LVL, MGA, MAD, PKR, SHP, LKR, ETB, CRC, BZD
+  ]
+
+  coins: [
+    BTC,  DASH,  LTC,  ETH,
+    ETC,  XRP,   EOS,  NEO,
+    ZEC,  IOTA,  XMR,  BCH,
+    BTG,  GNT
+  ]
+
+  coin_aliases:
+    DASH: DSH
+    IOTA: IOT

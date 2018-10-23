@@ -7,8 +7,8 @@ export enum Measurements {
 }
 
 export enum Tags {
-    Asset = 'asset',
-    Quote = 'quote'
+    Symbol = 'symbol',
+    CoinSymbol = 'coin_symbol',
 }
 
 
@@ -16,20 +16,26 @@ const databaseSchema: Influx.ISchemaOptions[] = [
     {
         measurement: Measurements.FiatRate,
         fields: {
-            usd_rate: FieldType.FLOAT,
+            // This rate is only to USD. UAH/USD, EUR/USD, PHP/USD, etc.
+            rate: FieldType.FLOAT,
         },
         tags: [
-            Tags.Asset,
+            // We will have currency symbol as EUR, PHP, UAH, RUR, CNY, YAY, etc.
+            Tags.Symbol,
         ],
     },
     {
         measurement: Measurements.CryptoRate,
         fields: {
+            // This rate of cryptocurrency to .
             rate: FieldType.FLOAT,
         },
         tags: [
-            Tags.Asset,
-            Tags.Quote,
+            // A tag for cryptocurrency symbols like BTC, ETH, DASH, etc.
+            Tags.CoinSymbol,
+
+            // A tag for quote symbols. BTC, EUR, PHP, UAH, RUR, CNY, YAY, etc.
+            Tags.Symbol,
         ],
     },
 ];

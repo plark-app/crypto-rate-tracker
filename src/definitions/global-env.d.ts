@@ -16,10 +16,17 @@ declare global {
         }
     };
 
+    type CurrencyConfigUnit = {
+        fiats: string[];
+        coins: string[];
+        coin_aliases: Record<string, string>;
+    };
+
     type ConfigUnits =
         Record<string, ConfigValue>
         | AppConfigUnit
-        | DatabaseConfigUnit;
+        | DatabaseConfigUnit
+        | CurrencyConfigUnit;
 
     type ApplicationConfig = Record<string, ConfigUnits>;
 

@@ -3,6 +3,7 @@ import { config } from 'config';
 import { createApiRouter } from 'routes';
 import { ConsoleColor } from 'common/console';
 import { configDatabase } from 'common/influx-database';
+import { startSheduleModule } from 'common/schedule';
 
 const expressApp = express();
 expressApp.set('port', config.get('app.port', 5005));
@@ -15,6 +16,7 @@ async function startApplication() {
     const influxConnection = await configDatabase();
 
     expressApp.use('/api', createApiRouter(influxConnection));
+    await startSheduleModule(influxConnection);
 
     expressApp.listen(expressApp.get('port'), () => {
         console.log(`${ConsoleColor.FgYellow}Server is listening on port: ${expressApp.get('port')}`, ConsoleColor.Reset);
