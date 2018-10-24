@@ -2,19 +2,19 @@ import Influx, { InfluxDB, FieldType } from 'influx';
 import config from 'config';
 
 export enum Measurements {
-    FiatRate = 'fiat_rates',
-    CryptoRate = 'crypto_rates'
+    FiatPrice = 'fiat_prices',
+    CryptoPrice = 'crypto_prices'
 }
 
 export enum Tags {
     Symbol = 'symbol',
-    CoinSymbol = 'coin_symbol',
+    SymbolQuote = 'symbol_quote',
 }
 
 
 const databaseSchema: Influx.ISchemaOptions[] = [
     {
-        measurement: Measurements.FiatRate,
+        measurement: Measurements.FiatPrice,
         fields: {
             // This rate is only to USD. UAH/USD, EUR/USD, PHP/USD, etc.
             rate: FieldType.FLOAT,
@@ -25,17 +25,17 @@ const databaseSchema: Influx.ISchemaOptions[] = [
         ],
     },
     {
-        measurement: Measurements.CryptoRate,
+        measurement: Measurements.CryptoPrice,
         fields: {
             // This rate of cryptocurrency to .
             rate: FieldType.FLOAT,
         },
         tags: [
             // A tag for cryptocurrency symbols like BTC, ETH, DASH, etc.
-            Tags.CoinSymbol,
+            Tags.Symbol,
 
             // A tag for quote symbols. BTC, EUR, PHP, UAH, RUR, CNY, YAY, etc.
-            Tags.Symbol,
+            Tags.SymbolQuote,
         ],
     },
 ];

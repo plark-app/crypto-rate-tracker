@@ -8,11 +8,11 @@ export type FiatTicker = {
     symbol: string;
 }
 
-export default class FiatRateProvider extends AbstractProvider {
+export default class FiatPriceProvider extends AbstractProvider {
 
     public static mapPoint(symbol: string, rate: number): IPoint {
         return {
-            measurement: Measurements.FiatRate,
+            measurement: Measurements.FiatPrice,
             tags: {
                 [Tags.Symbol]: symbol,
             },
@@ -24,7 +24,7 @@ export default class FiatRateProvider extends AbstractProvider {
 
     public async getLasts(): Promise<Record<string, number>> {
         const response: IResults<FiatTicker> = await this.influxDatabase.query<FiatTicker>(
-            `SELECT last(rate) as rate, ${Tags.Symbol} FROM ${Measurements.FiatRate} GROUP BY ${Tags.Symbol}`,
+            `SELECT last(rate) as rate, ${Tags.Symbol} FROM ${Measurements.FiatPrice} GROUP BY ${Tags.Symbol}`,
         );
 
         const data: Record<string, number> = {};

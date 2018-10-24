@@ -2,18 +2,12 @@ import { InfluxDB, IPoint } from 'influx';
 import { forEach, findKey } from 'lodash';
 import Axios from 'axios';
 import config from 'config';
-import FiatRateProvider from 'common/providers/fiat-rate-provider';
-import CryptoRateProvider from 'common/providers/crypto-rate-provider';
+import { floorUsd, floorSatosi } from 'common/helper';
+import FiatPriceProvider from 'common/providers/fiat-price-provider';
+import CryptoPriceProvider from 'common/providers/crypto-price-provider';
 
 const currencyConfig = config.get<CurrencyConfigUnit>('currency');
 
-function floorSatosi(value: number): number {
-    return Math.floor(value * 100000000) / 100000000;
-}
-
-function floorUsd(value: number): number {
-    return Math.floor(value * 10000) / 10000;
-}
 
 const bitfinex = Axios.create({
     baseURL: 'https://api.bitfinex.com/v2/',
@@ -62,8 +56,8 @@ export default (influxConnection: InfluxDB) => {
     const coins = currencyConfig.coins;
     const coinAliases = currencyConfig.coin_aliases;
 
-    const fiatProvider = new FiatRateProvider(influxConnection);
-    const cryptoProvider = new CryptoRateProvider(influxConnection);
+    const fiatProvider = new FiatPriceProvider(influxConnection);
+    const cryptoProvider = new CryptoPriceProvider(influxConnection);
 
     return async () => {
 
@@ -74,19 +68,19 @@ export default (influxConnection: InfluxDB) => {
         let bitcoinRate: number = 0;
 
         forEach(coinRates, (rate: number, coinSymbol: string) => {
-            points.push(CryptoRateProvider.mapPoint(coinSymbol, 'USD', rate));
+            points.push(CryptoPriceProvider.mapPoint(coinSymbol, 'USD', rate));
             if (coinSymbol === 'BTC') {
                 bitcoinRate = rate;
             }
 
             forEach(lastFiatRates, (fiatRate: number, fiatSymbol: string) => {
-                points.push(CryptoRateProvider.mapPoint(coinSymbol, fiatSymbol, floorUsd(rate * fiatRate)));
+                points.push(CryptoPriceProvider.mapPoint(coinSymbol, fiatSymbol, floorUsd(rate * fiatRate)));
             });
         });
 
         if (bitcoinRate) {
             forEach(coinRates, (rate: number, coinSymbol: string) => {
-                points.push(CryptoRateProvider.mapPoint(coinSymbol, 'BTC', floorSatosi(rate / bitcoinRate)));
+                points.push(CryptoPriceProvider.mapPoint(coinSymbol, 'BTC', floorSatosi(rate / bitcoinRate)));
             });
         }
 

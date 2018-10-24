@@ -1,11 +1,8 @@
 import { IPoint, IResults } from 'influx';
 import { Measurements, Tags } from 'common/influx-database';
+import { convertPercent } from 'common/helper';
 import AbstractProvider from './abstract-provider';
 
-
-function convertPercent(value: number): number {
-    return Math.round(value * 1000000) / 10000;
-}
 
 export type TickerMap = Record<string, Record<string, number[]>>;
 
@@ -28,16 +25,18 @@ export type CryptoOHLC = {
     time: Date;
     open: number;
     close: number;
+    high: number;
+    low: number;
     symbol: string;
 };
 
 
-export default class CryptoRateProvider extends AbstractProvider {
+export default class CryptoPriceProvider extends AbstractProvider {
     public static mapPoint(from: string, to: string, rate: number): IPoint {
         return {
-            measurement: Measurements.CryptoRate,
+            measurement: Measurements.CryptoPrice,
             tags: {
-                [Tags.CoinSymbol]: from,
+                [Tags.SymbolQuote]: from,
                 [Tags.Symbol]: to,
             },
             fields: {
@@ -49,9 +48,9 @@ export default class CryptoRateProvider extends AbstractProvider {
 
     public async getLasts(): Promise<TickerMap> {
         const response: IResults<CryptoPoint> = await this.influxDatabase.query<CryptoPoint>(
-            `SELECT LAST(rate) as rate, ${Tags.CoinSymbol}, ${Tags.Symbol} 
-            FROM ${Measurements.CryptoRate}
-            GROUP BY ${Tags.CoinSymbol}, ${Tags.Symbol}`,
+            `SELECT LAST(rate) as rate, ${Tags.SymbolQuote}, ${Tags.Symbol} 
+            FROM ${Measurements.CryptoPrice}
+            GROUP BY ${Tags.Symbol}, ${Tags.SymbolQuote}`,
         );
 
         const data: TickerMap = {};
@@ -72,9 +71,11 @@ export default class CryptoRateProvider extends AbstractProvider {
         const response: IResults<CryptoOHLC> = await this.influxDatabase.query<CryptoOHLC>(
             `SELECT
                 FIRST(rate) as open,
-                LAST(rate) as close
-            FROM ${Measurements.CryptoRate}
-            WHERE ${Tags.CoinSymbol} = '${symbol}' AND time > now() - 1d
+                LAST(rate) as close,
+                MAX(rate) as high,
+                MIN(rate) as low
+            FROM ${Measurements.CryptoPrice}
+            WHERE ${Tags.SymbolQuote} = '${symbol}' AND time > now() - 1d
             GROUP BY ${Tags.Symbol}`,
         );
 

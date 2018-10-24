@@ -6,5 +6,5 @@ import Jobs from './schedule-jobs';
 
 export const startSheduleModule = (influxConnection: InfluxDB) => {
     Schedule.scheduleJob('0 */30 * * * *', Jobs.updateFiatTickers(influxConnection));
-    Schedule.scheduleJob('0 */1 * * * *', Jobs.updateCryptoTickers(influxConnection));
+    Schedule.scheduleJob('0 */10 * * * *', Jobs.updateCryptoTickers(influxConnection));
 };

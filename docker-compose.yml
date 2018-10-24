@@ -1,0 +1,68 @@
+version: "3.3"
+
+services:
+
+  #|------------------------------------------
+  #| InfluxDB
+  #|------------------------------------------
+  influxdb:
+    image: influxdb
+    ports:
+      - "8086:8086"
+
+
+
+  #|------------------------------------------
+  #| Nginx Proxy
+  #|------------------------------------------
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /etc/nginx/certs:/etc/nginx/certs:ro
+      - /etc/nginx/vhost.d:/etc/nginx/vhost.d
+      - /usr/share/nginx/html:/usr/share/nginx/html
+    labels:
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+
+
+
+  #|------------------------------------------
+  #| Letsencrypt Proxy
+  #|------------------------------------------
+  letsencrypt-nginx:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    depends_on:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/nginx/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /etc/nginx/vhost.d:/etc/nginx/vhost.d
+      - /usr/share/nginx/html:/usr/share/nginx/html
+
+
+
+  #|------------------------------------------
+  #| FrontEnd
+  #| WEB Application as NodeJS Express
+  #|------------------------------------------
+  web:
+    image: plark/price-tracker:latest
+    environment:
+      VIRTUAL_HOST: price-tracker.berrywallet.io
+      VIRTUAL_PORT: 80
+      LETSENCRYPT_HOST: price-tracker.berrywallet.io
+      APP_ENV: production
+      HOST: price-tracker.berrywallet.io
+      PORT: 80
+      SECURE: "true"
+      INFLUXDB_HOST: influxdb
+      INFLUXDB_PORT: 8086
+    depends_on:
+      - nginx-proxy
+      - letsencrypt-nginx
+      - influxdb
