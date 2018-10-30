@@ -38,7 +38,7 @@ const getAssets = (influxConnection: InfluxDB) => {
             try {
                 quotes = await fiatProvider.getCoinQuotes(symbol);
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 continue;
             }
 

@@ -80,7 +80,6 @@ export default class CryptoPriceProvider extends AbstractProvider {
         );
 
         const quotes: CoinQuote[] = [];
-        // console.log(response);
 
         response.forEach((ticker: CryptoOHLC) => {
             quotes.push({
