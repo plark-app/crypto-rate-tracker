@@ -10,7 +10,9 @@ services:
     ports:
       - 8086:8086
     environment:
-      INFLUXDB_DB: plark-rate-tracker
+      INFLUXDB_DB: "PlarkRateTracker"
+    volumes:
+      - "/tmp/influxdb2:/var/lib/influxdb"
 
 
 
