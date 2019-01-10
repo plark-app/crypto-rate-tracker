@@ -11,6 +11,8 @@ services:
       - 8086:8086 # Main
       - 8083:8083 # Admin
       - 2003:2003 # Graphite
+    volumes:
+      - /var/data/plark-tracker-data:/var/lib/influxdb
     environment:
       INFLUXDB_GRAPHITE_ENABLED: 'true'
       INFLUXDB_ADMIN_ENABLED: 'true'
@@ -33,5 +35,7 @@ services:
       SECURE: "true"
       INFLUXDB_HOST: influxdb
       INFLUXDB_PORT: 8086
+    ports:
+      - 80:80
     depends_on:
       - influxdb
