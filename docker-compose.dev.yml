@@ -12,7 +12,7 @@ services:
       - 8083:8083 # Admin
       - 2003:2003 # Graphite
     volumes:
-      - /var/data/plark-tracker-data:/var/lib/influxdb
+      - /var/plark-tracker-data/influxdb:/var/lib/influxdb
     environment:
       INFLUXDB_GRAPHITE_ENABLED: 'true'
       INFLUXDB_ADMIN_ENABLED: 'true'

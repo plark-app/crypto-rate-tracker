@@ -10,7 +10,7 @@ services:
     ports:
       - "8086:8086"
     volumes:
-      - /var/data/plark-tracker-data:/var/lib/influxdb
+      - /var/plark-tracker-data/influxdb:/var/lib/influxdb
     environment:
       INFLUXDB_DB: plark-rate-tracker
 
