@@ -11,12 +11,10 @@ services:
       - 8086:8086 # Main
       - 8083:8083 # Admin
       - 2003:2003 # Graphite
-    volumes:
-      - /var/plark-tracker-data/influxdb:/var/lib/influxdb
     environment:
+      INFLUXDB_DB: plark-rate-tracker
       INFLUXDB_GRAPHITE_ENABLED: 'true'
       INFLUXDB_ADMIN_ENABLED: 'true'
-      INFLUXDB_DB: plark-rate-tracker
       INFLUXDB_ADMIN_USER: plark
       INFLUXDB_ADMIN_PASSWORD: plark
 

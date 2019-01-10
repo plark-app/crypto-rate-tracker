@@ -8,9 +8,7 @@ services:
   influxdb:
     image: influxdb
     ports:
-      - "8086:8086"
-    volumes:
-      - /var/plark-tracker-data/influxdb:/var/lib/influxdb
+      - 8086:8086
     environment:
       INFLUXDB_DB: plark-rate-tracker
 
@@ -22,8 +20,8 @@ services:
   nginx-proxy:
     image: jwilder/nginx-proxy
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - /etc/nginx/certs:/etc/nginx/certs:ro
