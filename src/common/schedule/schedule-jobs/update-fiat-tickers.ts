@@ -39,19 +39,27 @@ export default (influxConnection: InfluxDB) => {
         const points: IPoint[] = [];
 
         for (let symbols of chunk(currencyConfig.fiats, 2)) {
-            const response = await currencyClient.get<ConverterResponse>('/convert', {
-                params: {
-                    q: symbols.map((symbol: string) => 'USD_' + symbol).join(','),
-                },
-            });
+            let data: ConverterResponse;
 
-            const { results } = response.data;
+            try {
+                const response = await currencyClient.get<ConverterResponse>('/convert', {
+                    params: {
+                        q: symbols.map((symbol: string) => 'USD_' + symbol).join(','),
+                    },
+                });
 
-            if (!results) {
+                data = response.data;
+            } catch (error) {
+                console.error('Error on Fetch CurrencyConverterAPI', error.message);
+
+                return;
+            }
+
+            if (!data || !data.results) {
                 continue;
             }
 
-            forEach(results, (ticker: TickerInfo) => {
+            forEach(data.results, (ticker: TickerInfo) => {
                 points.push(FiatPriceProvider.mapPoint(ticker.to, ticker.val));
             });
         }

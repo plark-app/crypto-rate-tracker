@@ -8,23 +8,30 @@ import CryptoPriceProvider from 'common/providers/crypto-price-provider';
 
 const currencyConfig = config.get<CurrencyConfigUnit>('currency');
 
-
 const bitfinex = Axios.create({
     baseURL: 'https://api.bitfinex.com/v2/',
 });
-
 
 async function getCoinRates(
     symbols: string[],
     coinAliases: Record<string, string> = {},
 ): Promise<Record<string, number>> {
     const coinMap = symbols.map((coin: string) => `t${coinAliases[coin] || coin}USD`);
+    let data = undefined;
 
-    const { data } = await bitfinex.get<any[][]>('/tickers', {
-        params: {
-            symbols: coinMap.join(','),
-        },
-    });
+    try {
+        const response = await bitfinex.get<any[][]>('/tickers', {
+            params: {
+                symbols: coinMap.join(','),
+            },
+        });
+
+        data = response.data;
+    } catch (error) {
+        console.error("Error on Fetch Bitfinex", error.message);
+
+        return {};
+    }
 
     if (!data) {
         return {};
