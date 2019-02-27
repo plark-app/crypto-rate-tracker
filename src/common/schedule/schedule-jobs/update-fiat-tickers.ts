@@ -1,5 +1,5 @@
 import { InfluxDB, IPoint } from 'influx';
-import { chunk, forEach } from 'lodash';
+import { chunk, forEach, get } from 'lodash';
 import Axios from 'axios';
 import config from 'config';
 import FiatPriceProvider from 'common/providers/fiat-price-provider';
@@ -34,6 +34,7 @@ export default (influxConnection: InfluxDB) => {
     }
 
     const fiatProvider = new FiatPriceProvider(influxConnection);
+    const apiKey = get(currencyConfig, 'currencyconverterapi.apiKey');
 
     return async (): Promise<void> => {
         const points: IPoint[] = [];
@@ -44,6 +45,7 @@ export default (influxConnection: InfluxDB) => {
             try {
                 const response = await currencyClient.get<ConverterResponse>('/convert', {
                     params: {
+                        apiKey: apiKey,
                         q: symbols.map((symbol: string) => 'USD_' + symbol).join(','),
                     },
                 });

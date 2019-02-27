@@ -6,6 +6,7 @@ ENV SECURE=true
 
 ENV INFLUXDB_HOST=localhost
 ENV INFLUXDB_PORT=8086
+ENV CURRENCYCONVERTERAPI_API_KEY="provider-api-key"
 
 RUN apk add --no-cache gettext git
 

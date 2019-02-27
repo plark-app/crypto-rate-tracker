@@ -35,6 +35,7 @@ services:
       SECURE: "true"
       INFLUXDB_HOST: influxdb
       INFLUXDB_PORT: 8086
+      CURRENCYCONVERTERAPI_API_KEY: ""
     ports:
       - 80:80
     depends_on:

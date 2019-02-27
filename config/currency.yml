@@ -1,4 +1,7 @@
 currency:
+  currencyconverterapi:
+    apiKey: "provider-API-key"
+
   fiats: [
     GBP, EUR, HKD, CNY, JPY, CHF, AUD, CAD,
     KRW, UAH, RUB, CZK, KZT, TRY, PHP, SEK,

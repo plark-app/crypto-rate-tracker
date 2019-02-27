@@ -20,6 +20,9 @@ declare global {
         fiats: string[];
         coins: string[];
         coin_aliases: Record<string, string>;
+        currencyconverterapi: {
+            apiKey: string;
+        };
     };
 
     type ConfigUnits =

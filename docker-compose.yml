@@ -66,6 +66,7 @@ services:
       SECURE: "true"
       INFLUXDB_HOST: influxdb
       INFLUXDB_PORT: 8086
+      CURRENCYCONVERTERAPI_API_KEY: ""
     depends_on:
       - nginx-proxy
       - letsencrypt-nginx
