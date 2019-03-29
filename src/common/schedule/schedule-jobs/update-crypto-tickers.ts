@@ -2,6 +2,7 @@ import { InfluxDB, IPoint } from 'influx';
 import { forEach, findKey } from 'lodash';
 import Axios from 'axios';
 import config from 'config';
+import logger from 'common/logger';
 import { floorUsd, floorSatosi } from 'common/helper';
 import FiatPriceProvider from 'common/providers/fiat-price-provider';
 import CryptoPriceProvider from 'common/providers/crypto-price-provider';
@@ -28,7 +29,7 @@ async function getCoinRates(
 
         data = response.data;
     } catch (error) {
-        console.error("Error on Fetch Bitfinex", error.message);
+        logger.error('Error on Fetch Bitfinex', error.message);
 
         return {};
     }
@@ -81,13 +82,17 @@ export default (influxConnection: InfluxDB) => {
             }
 
             forEach(lastFiatRates, (fiatRate: number, fiatSymbol: string) => {
-                points.push(CryptoPriceProvider.mapPoint(coinSymbol, fiatSymbol, floorUsd(rate * fiatRate)));
+                points.push(
+                    CryptoPriceProvider.mapPoint(coinSymbol, fiatSymbol, floorUsd(rate * fiatRate)),
+                );
             });
         });
 
         if (bitcoinRate) {
             forEach(coinRates, (rate: number, coinSymbol: string) => {
-                points.push(CryptoPriceProvider.mapPoint(coinSymbol, 'BTC', floorSatosi(rate / bitcoinRate)));
+                points.push(
+                    CryptoPriceProvider.mapPoint(coinSymbol, 'BTC', floorSatosi(rate / bitcoinRate)),
+                );
             });
         }
 

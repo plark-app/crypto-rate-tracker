@@ -9,4 +9,4 @@ function logFormatter(tokens: TokenIndexer, req: express.Request, res: express.R
     ].join("\n");
 }
 
-export const createLogger = () => morgan(logFormatter);
+export const createHttpLogger = () => morgan(logFormatter);

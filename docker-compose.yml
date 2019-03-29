@@ -57,11 +57,11 @@ services:
   web:
     image: plark/crypto-rate-tracker:latest
     environment:
-      VIRTUAL_HOST: price-tracker.berrywallet.io
+      VIRTUAL_HOST: price-tracker.plark.io
       VIRTUAL_PORT: 80
-      LETSENCRYPT_HOST: price-tracker.berrywallet.io
+      LETSENCRYPT_HOST: price-tracker.plark.io
       APP_ENV: production
-      HOST: price-tracker.berrywallet.io
+      HOST: price-tracker.plark.io
       PORT: 80
       SECURE: "true"
       INFLUXDB_HOST: influxdb

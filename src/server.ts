@@ -1,27 +1,27 @@
 import express from 'express';
 import { config } from 'config';
-import { createApiRouter } from 'routes';
+import Routes from 'routes';
 import { ConsoleColor } from 'common/console';
 import { configDatabase } from 'common/influx-database';
 import { startSheduleModule } from 'common/schedule';
+import logger from 'common/logger';
 
 const expressApp = express();
 expressApp.set('port', config.get('app.port', 5005));
 expressApp.set('hostname', config.get('app.host', 'localhost'));
 
-
-
 async function startApplication() {
-
     const influxConnection = await configDatabase();
+    expressApp.set('influx', influxConnection);
 
-    expressApp.use('/api', createApiRouter(influxConnection));
+    expressApp.get('/status', Routes.createStatusRouter());
+    expressApp.use('/api', Routes.createApiRouter());
     await startSheduleModule(influxConnection);
 
     expressApp.listen(expressApp.get('port'), () => {
-        console.log(`${ConsoleColor.FgYellow}Server is listening on port: ${expressApp.get('port')}`, ConsoleColor.Reset);
+        logger.info(`${ConsoleColor.FgYellow}Server is listening on port: ${expressApp.get('port')}`, ConsoleColor.Reset);
 
-        console.log(
+        logger.info(
             '%sApp is running at http://%s:%d in %s mode %s',
             ConsoleColor.FgGreen,
             expressApp.get('hostname'),
@@ -29,12 +29,10 @@ async function startApplication() {
             expressApp.get('env'),
             ConsoleColor.Reset,
         );
-        console.log();
     });
 }
 
 
 startApplication().catch((error) => {
-    console.error(error.message);
-    console.log();
+    logger.error(error.message);
 });

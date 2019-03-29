@@ -2,23 +2,24 @@ import express from 'express';
 import { InfluxDB } from 'influx';
 import bodyParser from 'body-parser';
 import config from 'config';
+import logger from 'common/logger';
 import { HttpError } from 'common/http-errors';
 import CryptoPriceProvider, { CoinQuote } from 'common/providers/crypto-price-provider';
-import { createLogger } from './logger';
+import { createHttpLogger } from './logger';
 import { errorHandler } from './error-handler';
 
 
-const getAssets = (influxConnection: InfluxDB) => {
-
+const getAssets = () => {
     const coinSymbols: string[] = config.get<string[]>('currency.coins') as string[];
 
     if (!coinSymbols || coinSymbols.length === 0) {
         throw new Error(`Coins must be provided in config`);
     }
 
-    const fiatProvider = new CryptoPriceProvider(influxConnection);
-
     return async (req: express.Request, res: express.Response, next: AnyFunc) => {
+        const influxConnection: InfluxDB = req.app.get('influx');
+        const fiatProvider = new CryptoPriceProvider(influxConnection);
+
         const reqSymbols = (req.params.symbols || '').split(',');
 
         if (reqSymbols.length === 0) {
@@ -38,7 +39,8 @@ const getAssets = (influxConnection: InfluxDB) => {
             try {
                 quotes = await fiatProvider.getCoinQuotes(symbol);
             } catch (error) {
-                console.error(error);
+                logger.error(error);
+
                 continue;
             }
 
@@ -52,13 +54,13 @@ const getAssets = (influxConnection: InfluxDB) => {
 };
 
 
-export const createApiRouter = (influxConnection: InfluxDB): express.Router => {
+export default (): express.Router => {
     const apiRouter = express.Router();
 
     apiRouter.use(bodyParser.json({ type: 'application/json' }));
-    apiRouter.use(createLogger());
+    apiRouter.use(createHttpLogger());
 
-    apiRouter.get('/rate/:symbols', getAssets(influxConnection));
+    apiRouter.get('/rate/:symbols', getAssets());
 
     apiRouter.use(errorHandler);
 

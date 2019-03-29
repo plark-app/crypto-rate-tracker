@@ -2,6 +2,7 @@ import { InfluxDB, IPoint } from 'influx';
 import { chunk, forEach, get } from 'lodash';
 import Axios from 'axios';
 import config from 'config';
+import logger from 'common/logger';
 import FiatPriceProvider from 'common/providers/fiat-price-provider';
 
 
@@ -52,7 +53,7 @@ export default (influxConnection: InfluxDB) => {
 
                 data = response.data;
             } catch (error) {
-                console.error('Error on Fetch CurrencyConverterAPI', error.message);
+                logger.error('Error on Fetch CurrencyConverterAPI', error.message);
 
                 return;
             }
