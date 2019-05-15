@@ -5,14 +5,17 @@ currency:
   fiats: [
     GBP, EUR, HKD, CNY, JPY, CHF, AUD, CAD,
     KRW, UAH, RUB, CZK, KZT, TRY, PHP, SEK,
-    CUP, GIP, JMD, KPW, LVL, MGA, MAD, PKR, SHP, LKR, ETB, CRC, BZD
+    AED, INR, VND, SEK, TRY, DKK, IDR, THB, SGD, MYR, ZAR,
+    CUP, GIP, JMD, MGA, MAD, PKR, SHP, LKR, ETB, CRC
   ]
 
   coins: [
     BTC,  DASH,  LTC,  ETH,
     ETC,  XRP,   EOS,  NEO,
     ZEC,  IOTA,  XMR,  BCH,
-    BTG,  GNT
+    BTG,  GNT,   ADA,  BNB,
+    XLM,  TRX,   BSV,  XTZ,
+    ATOM
   ]
 
   coin_aliases:

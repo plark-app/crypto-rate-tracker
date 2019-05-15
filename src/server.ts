@@ -1,7 +1,6 @@
 import express from 'express';
 import { config } from 'config';
 import Routes from 'routes';
-import { ConsoleColor } from 'common/console';
 import { configDatabase } from 'common/influx-database';
 import { startSheduleModule } from 'common/schedule';
 import logger from 'common/logger';
@@ -19,15 +18,10 @@ async function startApplication() {
     await startSheduleModule(influxConnection);
 
     expressApp.listen(expressApp.get('port'), () => {
-        logger.info(`${ConsoleColor.FgYellow}Server is listening on port: ${expressApp.get('port')}`, ConsoleColor.Reset);
+        logger.info(`Server is listening on port: ${expressApp.get('port')}`);
 
         logger.info(
-            '%sApp is running at http://%s:%d in %s mode %s',
-            ConsoleColor.FgGreen,
-            expressApp.get('hostname'),
-            expressApp.get('port'),
-            expressApp.get('env'),
-            ConsoleColor.Reset,
+            `App is running at http://${expressApp.get('hostname')}:${expressApp.get('port')} in ${expressApp.get('env')} mode`,
         );
     });
 }

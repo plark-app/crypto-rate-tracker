@@ -70,7 +70,13 @@ export default (influxConnection: InfluxDB) => {
     return async () => {
 
         const lastFiatRates = await fiatProvider.getLasts();
-        const coinRates = await getCoinRates(coins, coinAliases);
+        let coinRates;
+        try {
+            coinRates = await getCoinRates(coins, coinAliases);
+        } catch (error) {
+            logger.error(error);
+            return;
+        }
 
         const points: IPoint[] = [];
         let bitcoinRate: number = 0;

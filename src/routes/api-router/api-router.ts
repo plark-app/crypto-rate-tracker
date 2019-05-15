@@ -1,4 +1,5 @@
 import express from 'express';
+import { get } from 'lodash';
 import { InfluxDB } from 'influx';
 import bodyParser from 'body-parser';
 import config from 'config';
@@ -20,6 +21,7 @@ const getAssets = () => {
         const influxConnection: InfluxDB = req.app.get('influx');
         const fiatProvider = new CryptoPriceProvider(influxConnection);
 
+        const simple = Boolean(get(req.query, 'simple', false));
         const reqSymbols = (req.params.symbols || '').split(',');
 
         if (reqSymbols.length === 0) {
@@ -37,14 +39,14 @@ const getAssets = () => {
         for (let symbol of reqSymbols) {
             let quotes: CoinQuote[] = [];
             try {
-                quotes = await fiatProvider.getCoinQuotes(symbol);
+                quotes = await fiatProvider.getCoinQuotes(symbol, simple);
             } catch (error) {
                 logger.error(error);
 
                 continue;
             }
 
-            response[symbol] = quotes;
+            response[symbol] =  quotes;
         }
 
         res.status(200).send({

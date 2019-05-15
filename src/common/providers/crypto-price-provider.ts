@@ -1,4 +1,5 @@
 import { IPoint, IResults } from 'influx';
+import { values } from 'lodash';
 import { Measurements, Tags } from 'common/influx-database';
 import { convertPercent } from 'common/helper';
 import AbstractProvider from './abstract-provider';
@@ -10,7 +11,7 @@ export type CoinQuote = {
     symbol: string;
     price: number;
     change_24h: number;
-};
+} | [string, number, number];
 
 
 export type CryptoPoint = {
@@ -67,7 +68,7 @@ export default class CryptoPriceProvider extends AbstractProvider {
     }
 
 
-    public async getCoinQuotes(symbol: string): Promise<CoinQuote[]> {
+    public async getCoinQuotes(symbol: string, simple: boolean = false): Promise<CoinQuote[]> {
         const response: IResults<CryptoOHLC> = await this.influxDatabase.query<CryptoOHLC>(
             `SELECT
                 FIRST(rate) as open,
@@ -82,11 +83,13 @@ export default class CryptoPriceProvider extends AbstractProvider {
         const quotes: CoinQuote[] = [];
 
         response.forEach((ticker: CryptoOHLC) => {
-            quotes.push({
+            const data = {
                 symbol: ticker.symbol,
                 price: ticker.close,
                 change_24h: convertPercent((ticker.close - ticker.open) / ticker.close),
-            });
+            };
+
+            quotes.push(simple ? values(data) as CoinQuote : data);
         });
 
         return quotes;
