@@ -49,7 +49,7 @@ export default (influxConnection: InfluxDB) => {
             } catch (error) {
                 logger.error('Error on Fetch cryptocompare.com: ' + error.message);
 
-                return;
+                throw error;
             }
 
             forEach(data, (value: number, symbol: string) => {

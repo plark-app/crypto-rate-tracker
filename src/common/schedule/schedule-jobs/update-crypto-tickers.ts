@@ -68,15 +68,8 @@ export default (influxConnection: InfluxDB) => {
     const cryptoProvider = new CryptoPriceProvider(influxConnection);
 
     return async () => {
-
         const lastFiatRates = await fiatProvider.getLasts();
-        let coinRates;
-        try {
-            coinRates = await getCoinRates(coins, coinAliases);
-        } catch (error) {
-            logger.error(error);
-            return;
-        }
+        const coinRates = await getCoinRates(coins, coinAliases);
 
         const points: IPoint[] = [];
         let bitcoinRate: number = 0;
