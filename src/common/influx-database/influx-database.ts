@@ -46,7 +46,7 @@ export const configDatabase = async (): Promise<InfluxDB> => {
     const dbConfig = config.get<DatabaseConfigUnit>('database');
 
     if (!dbConfig || !dbConfig.influx) {
-        throw new Error('DatabaseConfig must be defined!');
+        throw new Error('DatabaseConfig must be deёfined!');
     }
 
     const dbName = dbConfig.influx.database;
