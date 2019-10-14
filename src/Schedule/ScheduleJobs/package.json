@@ -1,0 +1,5 @@
+{
+    "name": "ScheduleJobs",
+    "private": true,
+    "main": "ScheduleJobs.ts"
+}

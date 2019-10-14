@@ -4,7 +4,6 @@ import { Measurements, Tags } from 'common/influx-database';
 import { convertPercent } from 'common/helper';
 import AbstractProvider from './abstract-provider';
 
-
 export type TickerMap = Record<string, Record<string, number[]>>;
 
 export type CoinQuote = {
@@ -13,14 +12,12 @@ export type CoinQuote = {
     change_24h: number;
 } | [string, number, number];
 
-
 export type CryptoPoint = {
     time: Date;
     rate: number;
     coin_symbol: string;
     symbol: string;
 };
-
 
 export type CryptoOHLC = {
     time: Date;
@@ -30,7 +27,6 @@ export type CryptoOHLC = {
     low: number;
     symbol: string;
 };
-
 
 export default class CryptoPriceProvider extends AbstractProvider {
     public static mapPoint(from: string, to: string, rate: number): IPoint {
@@ -45,7 +41,6 @@ export default class CryptoPriceProvider extends AbstractProvider {
             },
         };
     }
-
 
     public async getLasts(): Promise<TickerMap> {
         const response: IResults<CryptoPoint> = await this.influxDatabase.query<CryptoPoint>(
@@ -66,7 +61,6 @@ export default class CryptoPriceProvider extends AbstractProvider {
 
         return data;
     }
-
 
     public async getCoinQuotes(symbol: string, simple: boolean = false): Promise<CoinQuote[]> {
         const response: IResults<CryptoOHLC> = await this.influxDatabase.query<CryptoOHLC>(

@@ -11,7 +11,6 @@ export enum Tags {
     SymbolQuote = 'symbol_quote',
 }
 
-
 const databaseSchema: Influx.ISchemaOptions[] = [
     {
         measurement: Measurements.FiatPrice,
@@ -40,8 +39,7 @@ const databaseSchema: Influx.ISchemaOptions[] = [
     },
 ];
 
-
-export const configDatabase = async (): Promise<InfluxDB> => {
+export async function configDatabase(): Promise<InfluxDB> {
 
     const dbConfig = config.get<DatabaseConfigUnit>('database');
 
@@ -67,4 +65,4 @@ export const configDatabase = async (): Promise<InfluxDB> => {
     }
 
     return influxDatabase;
-};
+}

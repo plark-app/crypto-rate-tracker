@@ -21,3 +21,4 @@ currency:
   coin_aliases:
     DASH: DSH
     IOTA: IOT
+    BCH:  BAB

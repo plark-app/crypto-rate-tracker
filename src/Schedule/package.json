@@ -1,0 +1,6 @@
+{
+    "name": "Schedule",
+    "private": true,
+    "main": "Schedule.ts",
+    "types": "Schedule.ts"
+}

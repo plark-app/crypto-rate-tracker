@@ -1,8 +1,8 @@
 import express from 'express';
 import { config } from 'config';
 import Routes from 'routes';
+import { startSheduleModule } from 'Schedule';
 import { configDatabase } from 'common/influx-database';
-import { startSheduleModule } from 'common/schedule';
 import logger from 'common/logger';
 
 const expressApp = express();

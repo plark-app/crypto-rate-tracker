@@ -1,8 +1,7 @@
-import Schedule from 'node-schedule';
 import { InfluxDB } from 'influx';
+import Schedule from 'node-schedule';
 import logger from 'common/logger';
-import Jobs from './schedule-jobs';
-
+import Jobs from './ScheduleJobs';
 
 function wrapSheduleCallback(key: string, callback: (fireDate: Date) => any): any {
     return async (fireDate: Date) => {
@@ -19,16 +18,14 @@ function wrapSheduleCallback(key: string, callback: (fireDate: Date) => any): an
     };
 }
 
-
-export const startSheduleModule = (influxConnection: InfluxDB) => {
+export function startSheduleModule(influxConnection: InfluxDB): void {
     Schedule.scheduleJob('0 */30 * * * *', wrapSheduleCallback(
         'updateFiatTickers',
-        Jobs.updateFiatTickers(influxConnection),
+        Jobs.UpdateFiatTickersJob(influxConnection),
     ));
-
 
     Schedule.scheduleJob('0 */5 * * * *', wrapSheduleCallback(
         'updateCryptoTickers',
-        Jobs.updateCryptoTickers(influxConnection),
+        Jobs.UpdateCryptoTickersJob(influxConnection),
     ));
-};
+}
