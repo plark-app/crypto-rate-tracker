@@ -1,4 +1,4 @@
-FROM node:10.4.1-alpine
+FROM node:10.17.0-alpine
 
 ENV HOST=localhost
 ENV PORT=80

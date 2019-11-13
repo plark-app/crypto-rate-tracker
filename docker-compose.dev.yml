@@ -27,7 +27,7 @@ services:
   #| WEB Application as NodeJS Express
   #|------------------------------------------
   web:
-    image: plark/price-tracker:latest
+    image: plark/crypto-rate-tracker:latest
     environment:
       APP_ENV: production
       HOST: 127.0.0.1

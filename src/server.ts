@@ -1,7 +1,7 @@
 import express from 'express';
 import { config } from 'config';
 import Routes from 'routes';
-import { startSheduleModule } from 'Schedule';
+import { startScheduleModule } from 'Schedule';
 import { configDatabase } from 'common/influx-database';
 import logger from 'common/logger';
 
@@ -15,7 +15,7 @@ async function startApplication() {
 
     expressApp.use('/status', Routes.createStatusRouter());
     expressApp.use('/api', Routes.createApiRouter());
-    await startSheduleModule(influxConnection);
+    await startScheduleModule(influxConnection);
 
     expressApp.listen(expressApp.get('port'), () => {
         logger.info(`Server is listening on port: ${expressApp.get('port')}`);
