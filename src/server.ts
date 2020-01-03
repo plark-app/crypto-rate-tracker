@@ -13,6 +13,7 @@ async function startApplication() {
     const influxConnection = await configDatabase();
     expressApp.set('influx', influxConnection);
 
+    expressApp.get('/robots.txt', Routes.robotsRouter);
     expressApp.use('/status', Routes.createStatusRouter());
     expressApp.use('/api', Routes.createApiRouter());
     await startScheduleModule(influxConnection);

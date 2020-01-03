@@ -10,13 +10,7 @@ import { createHttpLogger } from './logger';
 import { errorHandler } from './error-handler';
 
 
-const getAssets = () => {
-    const coinSymbols: string[] = config.get<string[]>('currency.coins') as string[];
-
-    if (!coinSymbols || coinSymbols.length === 0) {
-        throw new Error(`Coins must be provided in config`);
-    }
-
+function getAssets(coinSymbols: string[]) {
     return async (req: express.Request, res: express.Response, next: AnyFunc) => {
         const influxConnection: InfluxDB = req.app.get('influx');
         const fiatProvider = new CryptoPriceProvider(influxConnection);
@@ -46,23 +40,69 @@ const getAssets = () => {
                 continue;
             }
 
-            response[symbol] =  quotes;
+            response[symbol] = quotes;
         }
 
         res.status(200).send({
             result: response,
         });
     };
-};
+}
+
+
+function getDailyChart(coinSymbols: string[]) {
+    return async (req: express.Request, res: express.Response, next: AnyFunc) => {
+        const influxConnection: InfluxDB = req.app.get('influx');
+        const fiatProvider = new CryptoPriceProvider(influxConnection);
+
+        const reqSymbols = (req.params.symbols || '').split(',');
+
+        if (reqSymbols.length === 0) {
+            return next(new HttpError('Must to check symbols', 400));
+        }
+
+        for (let symbol of reqSymbols) {
+            if (coinSymbols.indexOf(symbol) < 0) {
+                return next(new HttpError(`Invalid symbol ${symbol}`, 400));
+            }
+        }
+
+        let response: Record<string, number[]> = {};
+
+        for (let symbol of reqSymbols) {
+            let quotes: number[] = [];
+            try {
+                quotes = await fiatProvider.getCoinDailyChart(symbol);
+            } catch (error) {
+                logger.error(error);
+
+                continue;
+            }
+
+            response[symbol] = quotes;
+        }
+
+        res.status(200).send({
+            result: response,
+        });
+    };
+}
 
 
 export default (): express.Router => {
+    const coinSymbols: string[] = config.get<string[]>('currency.coins') as string[];
+
+    if (!coinSymbols || coinSymbols.length === 0) {
+        throw new Error(`Coins must be provided in config`);
+    }
+
     const apiRouter = express.Router();
 
     apiRouter.use(bodyParser.json({ type: 'application/json' }));
     apiRouter.use(createHttpLogger());
 
-    apiRouter.get('/rate/:symbols', getAssets());
+    apiRouter.get('/rate/:symbols', getAssets(coinSymbols));
+    apiRouter.get('/daily-chart/:symbols', getDailyChart(coinSymbols));
 
     apiRouter.use(errorHandler);
 

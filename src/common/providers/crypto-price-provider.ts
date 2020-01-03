@@ -28,6 +28,12 @@ export type CryptoOHLC = {
     symbol: string;
 };
 
+export type CryptoChart = {
+    time: Date;
+    symbol: string;
+    price: number;
+};
+
 export default class CryptoPriceProvider extends AbstractProvider {
     public static mapPoint(from: string, to: string, rate: number): IPoint {
         return {
@@ -84,6 +90,26 @@ export default class CryptoPriceProvider extends AbstractProvider {
             };
 
             quotes.push(simple ? values(data) as CoinQuote : data);
+        });
+
+        return quotes;
+    }
+
+
+
+    public async getCoinDailyChart(symbol: string): Promise<number[]> {
+        const response: IResults<CryptoChart> = await this.influxDatabase.query<CryptoChart>(
+            `SELECT
+                FIRST(rate) as price
+            FROM ${Measurements.CryptoPrice}
+            WHERE ${Tags.SymbolQuote} = '${symbol}' AND time > now() - 1d AND ${Tags.Symbol} = 'USD'
+            GROUP BY ${Tags.Symbol}`,
+        );
+
+        const quotes: number[] = [];
+
+        response.forEach((ticker: CryptoChart) => {
+            quotes.push(ticker.price);
         });
 
         return quotes;
