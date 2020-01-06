@@ -1,5 +1,6 @@
 import express from 'express';
 import { get } from 'lodash';
+import moment from 'moment';
 import { InfluxDB } from 'influx';
 import bodyParser from 'body-parser';
 import config from 'config';
@@ -68,11 +69,12 @@ function getDailyChart(coinSymbols: string[]) {
         }
 
         let response: Record<string, number[]> = {};
+        const fromTime = moment().startOf('hour').subtract(23, 'hours');
 
         for (let symbol of reqSymbols) {
             let quotes: number[] = [];
             try {
-                quotes = await fiatProvider.getCoinDailyChart(symbol);
+                quotes = await fiatProvider.getCoinDailyChart(symbol, fromTime.unix());
             } catch (error) {
                 logger.error(error);
 

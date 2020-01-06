@@ -1,6 +1,6 @@
 {
     "name": "crypto-price-tracker",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "Currency rate tracker",
     "private": true,
     "author": "Plark <info@plark.io>",

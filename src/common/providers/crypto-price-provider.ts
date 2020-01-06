@@ -1,5 +1,5 @@
 import { IPoint, IResults } from 'influx';
-import { values } from 'lodash';
+import _ from 'lodash';
 import { Measurements, Tags } from 'common/influx-database';
 import { convertPercent } from 'common/helper';
 import AbstractProvider from './abstract-provider';
@@ -89,20 +89,19 @@ export default class CryptoPriceProvider extends AbstractProvider {
                 change_24h: convertPercent((ticker.close - ticker.open) / ticker.close),
             };
 
-            quotes.push(simple ? values(data) as CoinQuote : data);
+            quotes.push(simple ? _.values(data) as CoinQuote : data);
         });
 
         return quotes;
     }
 
 
-
-    public async getCoinDailyChart(symbol: string): Promise<number[]> {
+    public async getCoinDailyChart(symbol: string, fromTime: number): Promise<number[]> {
         const response: IResults<CryptoChart> = await this.influxDatabase.query<CryptoChart>(
             `SELECT
                 LAST(rate) as price
             FROM ${Measurements.CryptoPrice}
-            WHERE ${Tags.SymbolQuote} = '${symbol}' AND time > now() - 23h AND ${Tags.Symbol} = 'USD'
+            WHERE ${Tags.SymbolQuote} = '${symbol}' AND time > ${fromTime}s AND ${Tags.Symbol} = 'USD'
             GROUP BY ${Tags.Symbol}, time(1h)`,
         );
 
