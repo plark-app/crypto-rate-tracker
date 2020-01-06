@@ -100,10 +100,10 @@ export default class CryptoPriceProvider extends AbstractProvider {
     public async getCoinDailyChart(symbol: string): Promise<number[]> {
         const response: IResults<CryptoChart> = await this.influxDatabase.query<CryptoChart>(
             `SELECT
-                FIRST(rate) as price
+                LAST(rate) as price
             FROM ${Measurements.CryptoPrice}
-            WHERE ${Tags.SymbolQuote} = '${symbol}' AND time > now() - 1d AND ${Tags.Symbol} = 'USD'
-            GROUP BY ${Tags.Symbol}`,
+            WHERE ${Tags.SymbolQuote} = '${symbol}' AND time > now() - 23h AND ${Tags.Symbol} = 'USD'
+            GROUP BY ${Tags.Symbol}, time(1h)`,
         );
 
         const quotes: number[] = [];
