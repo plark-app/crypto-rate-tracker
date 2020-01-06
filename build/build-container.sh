@@ -13,4 +13,4 @@ docker build \
 docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
 
 docker push plark/crypto-rate-tracker:$APPLICATION_VERSION
-docker plark/crypto-rate-tracker:latest
+docker push plark/crypto-rate-tracker:latest
