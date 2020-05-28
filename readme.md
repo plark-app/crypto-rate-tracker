@@ -7,3 +7,15 @@
 </p>
 
 <hr />
+
+
+
+Open InfluxDB 
+```bash
+docker-compose exec influxdb bash
+```
+
+Open InfluxDB 
+```bash
+docker-compose exec influxdb bash
+```
