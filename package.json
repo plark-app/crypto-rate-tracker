@@ -23,7 +23,7 @@
         "cli-table": "0.3.1",
         "deep-assign": "3.0.0",
         "ethereumjs-util": "5.2.0",
-        "express": "4.17.1",
+        "express": "4.17.3",
         "firebase": "5.5.0",
         "firebase-admin": "6.0.0",
         "influx": "5.0.7",
